@@ -1,0 +1,97 @@
+definitions:
+  models.Comment:
+    properties:
+      content:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      project_id:
+        type: integer
+      updatedAt:
+        type: string
+      userID:
+        type: integer
+    type: object
+  models.Project:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      createdAt:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      likes:
+        items:
+          $ref: '#/definitions/models.User'
+        type: array
+      name:
+        type: string
+      skills:
+        description: |-
+          Skills      []string `gorm:"type:json"` // Tableau de chaînes stockées en format json dans la bdd
+          Gorm ne sait pas gérer les tableaux de strings directement donc on passe par datatypes qu'on a installé précédemment.
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  models.User:
+    properties:
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      likedProjects:
+        items:
+          $ref: '#/definitions/models.Project'
+        type: array
+      password:
+        minLength: 6
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact: {}
+  description: Description du projet project Gotham
+  title: Project Gotham
+  version: "1.0"
+paths:
+  /projects:
+    get:
+      description: Récupération de tous les projets
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Project'
+            type: array
+      security:
+      - BearerAuth: []
+      tags:
+      - Projects
+swagger: "2.0"
